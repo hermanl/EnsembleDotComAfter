@@ -1,8 +1,8 @@
 # Lunch & Learn Edge Delivery Services Demo
 
 ## Environments
-- Preview: https://main--ensemble--adobedevxsc.hlx.page/
-- Live: https://main--ensemble--adobedevxsc.hlx.live/
+- Preview: https://main--ensembledotcomafter--ensemblesc.hlx.page/
+- Live: https://main--ensembledotcomafter--ensemblesc.hlx.live/
 
 ## Installation
 
