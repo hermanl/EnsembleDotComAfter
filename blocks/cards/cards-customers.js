@@ -1,6 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-export default function CardsCustomers (block) {
+export default function CardsCustomers(block) {
   const link = block.querySelector('a');
   let data = [];
   let totalSlides;
@@ -12,29 +12,33 @@ export default function CardsCustomers (block) {
     const groupSize = 9;
 
     for (let i = 0; i < data.length; i += groupSize) {
-        result.push(data.slice(i, i + groupSize));
+      result.push(data.slice(i, i + groupSize));
     }
     return result;
   }
 
   function createSlides(sortedGroups) {
     const updatedSlides = [];
-  
-    sortedGroups.forEach((group) => {
+
+    sortedGroups.forEach(group => {
       const slideDiv = document.createElement('div');
       slideDiv.classList.add('slide');
-    
 
-      group.forEach((customer) => {
-        const optimizedImage = createOptimizedPicture(customer.image, customer.name, true, [{ width: '210' }]);
+      group.forEach(customer => {
+        const optimizedImage = createOptimizedPicture(
+          customer.image,
+          customer.name,
+          true,
+          [{ width: '210' }],
+        );
 
         const cardHtml = `<div class="card">${optimizedImage.outerHTML}</div>`;
         slideDiv.innerHTML += cardHtml;
       });
-  
+
       updatedSlides.push(slideDiv.outerHTML);
     });
-  
+
     block.innerHTML = `<div class="carousel-wrapper">
       <div class="cards-carousel">
         ${updatedSlides.join('')}
@@ -51,7 +55,7 @@ export default function CardsCustomers (block) {
 
     const carousel = block.querySelector('.cards-carousel');
     carousel.style.width = `${sortedGroups.length * 100}%`;
-  
+
     // Calculate totalSlides here, after the slides are created
     totalSlides = block.querySelectorAll('.slide').length;
 
@@ -61,44 +65,44 @@ export default function CardsCustomers (block) {
   let currentSlide = 0;
   function showSlide(index) {
     // Calculate the new left offset of the carousel
-    const newLeftOffset = index * (-100); // 100% is the width of each slide
+    const newLeftOffset = index * -100; // 100% is the width of each slide
     block.querySelector('.cards-carousel').style.left = newLeftOffset + '%';
-  
+
     // Add or remove 'disabled' class based on the current slide
     const leftArrow = block.querySelector('.left-arrow');
     const rightArrow = block.querySelector('.right-arrow');
-  
+
     if (index === 0) {
       leftArrow.classList.add('disabled');
     } else {
       leftArrow.classList.remove('disabled');
     }
-  
+
     if (index === totalSlides - 1) {
       rightArrow.classList.add('disabled');
     } else {
       rightArrow.classList.remove('disabled');
     }
   }
-  
+
   function addEventListeners(totalSlides) {
     const leftArrow = block.querySelector('.left-arrow');
     const rightArrow = block.querySelector('.right-arrow');
-  
+
     leftArrow.addEventListener('click', () => {
       if (currentSlide > 0) {
         currentSlide--;
         showSlide(currentSlide);
       }
     });
-  
+
     rightArrow.addEventListener('click', () => {
       if (currentSlide < totalSlides - 1) {
         currentSlide++;
         showSlide(currentSlide);
       }
     });
-  
+
     // Initially add the 'disabled' class to the left arrow
     leftArrow.classList.add('disabled');
   }
@@ -109,11 +113,11 @@ export default function CardsCustomers (block) {
     if (response.ok) {
       const jsonData = await response.json();
       data = jsonData?.data;
-      
+
       let sortedGroups = sortData(data);
       createSlides(sortedGroups);
     } else {
-      console.log("Unable to get json data for cards customers block");
+      console.log('Unable to get json data for cards customers block');
     }
   }
 

@@ -8,7 +8,9 @@ import { loadFragment } from '../fragment/fragment.js';
 export default async function decorate(block) {
   // load footer as fragment
   const footerMeta = getMetadata('footer');
-  const footerPath = footerMeta ? new URL(footerMeta, window.location).pathname : '/footer';
+  const footerPath = footerMeta
+    ? new URL(footerMeta, window.location).pathname
+    : '/footer';
   const fragment = await loadFragment(footerPath);
 
   // decorate footer DOM
@@ -28,25 +30,29 @@ export default async function decorate(block) {
 
   // Modify section html
   const secondSection = footer.querySelectorAll('.section')[1];
-  const defaultContentWrapper = secondSection.querySelector('.default-content-wrapper');
+  const defaultContentWrapper = secondSection.querySelector(
+    '.default-content-wrapper',
+  );
   const newDiv = document.createElement('div');
   newDiv.classList.add('wrapper');
   const allParagraphs = defaultContentWrapper.querySelectorAll('p');
-  
+
   for (let i = allParagraphs.length - 2; i < allParagraphs.length; i++) {
     newDiv.appendChild(allParagraphs[i]);
   }
-  
+
   defaultContentWrapper.appendChild(newDiv);
 
   block.append(footer);
 
   // Update brand logo title attribute
-  const section = block.querySelector('.section:nth-child(2) .button-container');
+  const section = block.querySelector(
+    '.section:nth-child(2) .button-container',
+  );
   const iconName = section.querySelector('img');
   const link = section.querySelector('a');
   if (iconName && link) {
-  const iconNameValue = iconName.getAttribute('data-icon-name');
-  link.setAttribute('title', iconNameValue);
+    const iconNameValue = iconName.getAttribute('data-icon-name');
+    link.setAttribute('title', iconNameValue);
   }
 }

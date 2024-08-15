@@ -2,7 +2,7 @@ export default function CardsServices(block) {
   const cardContainer = document.createElement('div');
   cardContainer.classList.add('card-container');
 
-  [...block.children].forEach((child) => {
+  [...block.children].forEach(child => {
     child.classList.add('card');
 
     const imageWrapper = child.firstElementChild;
@@ -19,7 +19,7 @@ export default function CardsServices(block) {
       href = link?.href;
       lastParagraph.remove();
     }
-  
+
     const wrapperLink = document.createElement('a');
     wrapperLink.href = href;
 
