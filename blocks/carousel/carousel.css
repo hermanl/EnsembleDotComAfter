@@ -15,6 +15,11 @@
   color: var(--color-black);
 }
 
+.image-wrapper {
+  width: 400px;
+  height: 194px;
+}
+
 .card p:first-of-type {
   font-size: 16px;
   font-weight: 500;
