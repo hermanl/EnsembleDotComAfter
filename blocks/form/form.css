@@ -1,0 +1,12 @@
+form {
+  display: flex;
+  flex-direction: column;
+  margin-left: auto;
+  margin-right: auto;
+  width: 30%;
+}
+
+form .malformed {
+  border-color: #CC0000;
+  border-width: 2px;
+}

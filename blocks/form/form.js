@@ -1,6 +1,21 @@
+function validateEmail() {
+  const email = document.querySelector('#email');
+  const isEmail = email
+    .value
+    .toLowerCase()
+    .match(
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    );
+
+  email.className = !isEmail ? "malformed" : "";
+  return isEmail;
+};
+
 function submitForm() {
   const email = document.querySelector('#email').value;
   const comments = document.querySelector('#comments').value;
+
+  if (!validateEmail()) return;
   
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
@@ -29,6 +44,7 @@ export default function decorate(block) {
   emailInput.setAttribute("type", "text");
   emailInput.setAttribute("id", "email");
   emailInput.setAttribute("name", "email");
+  emailInput.onchange = validateEmail;
 
   form.append(emailLabel);
   form.append(emailInput);
@@ -41,6 +57,7 @@ export default function decorate(block) {
   commentInput.setAttribute("type", "text");
   commentInput.setAttribute("id", "comments");
   commentInput.setAttribute("name", "comments");
+  commentInput.setAttribute("rows", "10");
 
   form.append(commentLabel);
   form.append(commentInput);
