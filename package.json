@@ -30,7 +30,6 @@
     "stylelint-config-standard": "36.0.0"
   },
   "dependencies": {
-    "@adobe/aem-headless-client-js": "^4.0.0",
     "eslint-config-prettier": "^9.1.0"
   }
 }
