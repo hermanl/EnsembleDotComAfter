@@ -21,7 +21,7 @@ async function fetchCarouselData(block) {
 
 function groupDataByTitle(data) {
   const groupedData = {};
-  data.forEach((item) => {
+  data.forEach(item => {
     // use the title as the group key
     const groupKey = item.Title.toLowerCase().replace(/\s+/g, '-');
     groupedData[groupKey] = item;
@@ -94,10 +94,10 @@ function renderData(groupedData, block) {
     const cardElement = createCarouselCard(card, key);
 
     // set active class for the first item
-    if (index === 0) {
+    let currentIndex = 0;
+    if (index >= currentIndex && index < currentIndex + 3) {
       cardElement.classList.add('active');
     }
-
     carouselInner.appendChild(cardElement);
   });
 
@@ -108,17 +108,21 @@ function renderData(groupedData, block) {
   function updateActiveCard() {
     const cards = carouselInner.querySelectorAll('.card');
     cards.forEach((card, index) => {
-      card.classList.toggle('active', index === currentIndex);
+      if (index >= currentIndex && index < currentIndex + 3) {
+        card.classList.add('active');
+      } else {
+        card.classList.remove('active');
+      }
     });
   }
 
   prevButton.addEventListener('click', () => {
-    currentIndex = currentIndex === 0 ? totalItems - 1 : currentIndex - 1;
+    currentIndex = (currentIndex - 3 + totalItems) % totalItems;
     updateActiveCard();
   });
 
   nextButton.addEventListener('click', () => {
-    currentIndex = currentIndex === totalItems - 1 ? 0 : currentIndex + 1;
+    currentIndex = (currentIndex + 3) % totalItems;
     updateActiveCard();
   });
 }
