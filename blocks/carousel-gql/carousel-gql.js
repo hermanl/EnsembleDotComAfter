@@ -1,28 +1,34 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { fetchPersistedQuery } from '../../api/persistedQueries.js';
 
 async function fetchCarouselData(block) {
-  const link = block.querySelector('a');
-  let data = [];
-  const response = await fetch(link?.href);
-  if (response.ok) {
-    const jsonData = await response.json();
+  const persistedQuery = 'EDS-Workshop/anothaone';
+  const queryParameters = {};
 
-    // grab nested array from the response
-    data = jsonData.data.edsWorkshopCarouselList.items;
-  } else {
-    // eslint-disable-next-line no-console
-    console.log('Failed to fetch carousel data');
+  let data = [];
+
+  try {
+    const { data: gqlData, error } = await fetchPersistedQuery(
+      persistedQuery,
+      queryParameters,
+    );
+
+    if (error) {
+      console.error('Failed to fetch GraphQL data:', error);
+      return data;
+    }
+
+    data = gqlData.edsWorkshopCarouselList.items;
+  } catch (e) {
+    console.error('Unexpected error while fetching GraphQL data:', e);
   }
 
-  // remove element after fetching data
-  link?.remove();
   return data;
 }
 
 function groupDataByTitle(data) {
   const groupedData = {};
   data.forEach(item => {
-    // use the title as the group key
     const groupKey = item.title.toLowerCase().replace(/\s+/g, '-');
     groupedData[groupKey] = item;
   });
@@ -46,12 +52,10 @@ function createCarouselCard(card, key) {
   const description = document.createElement('p');
   description.textContent = card.description;
 
-  // only append image if imageUrl exists
   const image = createOptimizedPicture(card.referenceImage, card.title, true, [
     { width: '210' },
   ]);
 
-  // append elements to the containers
   infoContainer.appendChild(title);
   infoContainer.appendChild(services);
   infoContainer.appendChild(description);
@@ -63,11 +67,9 @@ function createCarouselCard(card, key) {
 }
 
 function renderData(groupedData, block) {
-  // create carousel container for the items
   const carouselInner = document.createElement('div');
   carouselInner.classList.add('carousel-container');
 
-  // create carousel navigation container & buttons
   const navContainer = document.createElement('div');
   navContainer.classList.add('carousel-nav');
   const prevButton = document.createElement('button');
@@ -78,8 +80,8 @@ function renderData(groupedData, block) {
 
   const nextButton = document.createElement('button');
   const nextIcon = document.createElement('img');
-  nextButton.classList.add('right-arrow');
   nextIcon.src = '/icons/right-arrow.png';
+  nextButton.classList.add('right-arrow');
   nextButton.appendChild(nextIcon);
 
   block.appendChild(prevButton);
@@ -92,8 +94,6 @@ function renderData(groupedData, block) {
   Object.keys(groupedData).forEach((key, index) => {
     const card = groupedData[key];
     const cardElement = createCarouselCard(card, key);
-
-    // set active class for the first item
     let currentIndex = 0;
     if (index >= currentIndex && index < currentIndex + 3) {
       cardElement.classList.add('active');
@@ -101,7 +101,6 @@ function renderData(groupedData, block) {
     carouselInner.appendChild(cardElement);
   });
 
-  // add event listeners for navigation buttons
   let currentIndex = 0;
   const totalItems = Object.keys(groupedData).length;
 
@@ -128,29 +127,7 @@ function renderData(groupedData, block) {
 }
 
 export default async function decorate(block) {
-  const data = await fetchCarouselData(block);
+  const data = await fetchCarouselData();
   const groupedData = groupDataByTitle(data);
   renderData(groupedData, block);
 }
-
-// import { fetchPersistedQuery } from '../../api/persistedQueries.js';
-
-// export default async function decorate() {
-//   const persistedQuery = 'EDS-Workshop/test';
-//   const queryParameters = {};
-
-//   try {
-//     const { data, error } = await fetchPersistedQuery(
-//       persistedQuery,
-//       queryParameters,
-//     );
-
-//     if (error) {
-//       console.error('Failed to fetch GraphQL data:', error);
-//     } else {
-//       console.log('GraphQL response data:', data);
-//     }
-//   } catch (e) {
-//     console.error('Unexpected error while fetching GraphQL data:', e);
-//   }
-// }

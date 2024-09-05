@@ -19,25 +19,3 @@ export async function fetchPersistedQuery(persistedQuery, queryParameters) {
 
   return { data, error };
 }
-
-// const aemHeadlessClient = require('./aemHeadlessClient.js');
-
-// const fetchPersistedQuery = async (persistedQuery, queryParameters) => {
-//   let data;
-//   let error;
-
-//   try {
-//     const response = await aemHeadlessClient.runPersistedQuery(
-//       persistedQuery,
-//       queryParameters,
-//     );
-//     data = response?.data;
-//     console.log(response);
-//   } catch (e) {
-//     error = e instanceof Error ? e.message : 'An unknown error occurred';
-//   }
-
-//   return { data, error };
-// };
-
-// module.exports = { fetchPersistedQuery };
