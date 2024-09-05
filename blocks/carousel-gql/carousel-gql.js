@@ -136,13 +136,13 @@ export default async function decorate(block) {
 // import { fetchPersistedQuery } from '../../api/persistedQueries.js';
 
 // export default async function decorate() {
-//   const persistedQuery = 'EDS-Workshop/results';
+//   const persistedQuery = 'EDS-Workshop/test';
 //   const queryParameters = {};
 
 //   try {
 //     const { data, error } = await fetchPersistedQuery(
 //       persistedQuery,
-//       queryParameters
+//       queryParameters,
 //     );
 
 //     if (error) {
