@@ -1,8 +1,7 @@
 import AdobeAemHeadlessClientJs from 'https://cdn.skypack.dev/pin/@adobe/aem-headless-client-js@v3.2.0-R5xKUKJyh8kNAfej66Zg/mode=imports,min/optimized/@adobe/aem-headless-client-js.js';
 
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { config } from '../../api/config.js';
-import { calcEnvironment } from '../../scripts/configs.js';
+import { getConfigValue, calcEnvironment } from '../../scripts/configs.js';
 
 async function fetchCarouselData(block) {
   //extract persisted query from block
@@ -19,10 +18,19 @@ async function fetchCarouselData(block) {
     }
   });
 
+  console.log('Persisted Query:', persistedQuery);
+  block.innerHTML = '';
+
   try {
-    const AEM_HOST = await config.SERVICE_URI;
-    const AEM_GRAPHQL_ENDPOINT = await config.GRAPHQL_ENDPOINT;
-    const AUTH_TOKEN = await config.AUTH_TOKEN;
+    const AEM_HOST = await getConfigValue('aem-host');
+    const AEM_GRAPHQL_ENDPOINT = await getConfigValue('aem-graphql-endpoint');
+    const AUTH_TOKEN = await getConfigValue('auth');
+
+    console.log('Environment:', calcEnvironment());
+    console.log('AEM_HOST:', AEM_HOST);
+    console.log('AEM_GRAPHQL_ENDPOINT:', AEM_GRAPHQL_ENDPOINT);
+    console.log('AUTH_TOKEN:', AUTH_TOKEN);
+
     const AEM_HEADLESS_CLIENT = new AdobeAemHeadlessClientJs({
       serviceURL: AEM_HOST,
       auth: AUTH_TOKEN,
@@ -30,15 +38,16 @@ async function fetchCarouselData(block) {
     let dataObj = {};
 
     if (persistedQuery) {
-      dataObj = await AEM_HEADLESS_CLIENT.runPersistedQuery(
-        AEM_GRAPHQL_ENDPOINT + persistedQuery,
-      );
+      const endpoint = `${AEM_GRAPHQL_ENDPOINT}${persistedQuery}`;
+      console.log('endpoint', endpoint);
+      dataObj = await AEM_HEADLESS_CLIENT.runPersistedQuery(endpoint);
     }
 
     const data = dataObj?.data?.edsWorkshopCarouselList?.items;
     return data;
   } catch (e) {
     console.error('Unexpected error while fetching GraphQL data:', e);
+    return [];
   }
 }
 
@@ -145,8 +154,5 @@ function renderData(groupedData, block) {
 export default async function decorate(block) {
   const data = await fetchCarouselData(block);
   const groupedData = groupDataByTitle(data);
-  const env = calcEnvironment();
-  const calcEnv = env;
-  console.log(calcEnv);
   renderData(groupedData, block);
 }

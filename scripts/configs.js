@@ -51,5 +51,8 @@ export const getConfigValue = async (configParam, environment) => {
   const env = environment || calcEnvironment();
   const configJSON = await getConfigForEnvironment(env);
   const configElements = JSON.parse(configJSON).data;
-  return configElements.find(c => c.key === configParam)?.value;
+  const configObject = configElements[0];
+  const configValue = configObject ? configObject[configParam] : undefined;
+
+  return configValue;
 };
