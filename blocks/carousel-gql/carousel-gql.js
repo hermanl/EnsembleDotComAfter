@@ -1,29 +1,45 @@
+import AdobeAemHeadlessClientJs from 'https://cdn.skypack.dev/pin/@adobe/aem-headless-client-js@v3.2.0-R5xKUKJyh8kNAfej66Zg/mode=imports,min/optimized/@adobe/aem-headless-client-js.js';
+
 import { createOptimizedPicture } from '../../scripts/aem.js';
-import { fetchPersistedQuery } from '../../api/persistedQueries.js';
+import { config } from '../../api/config.js';
+import { calcEnvironment } from '../../scripts/configs.js';
 
 async function fetchCarouselData(block) {
-  const persistedQuery = 'EDS-Workshop/anothaone';
-  const queryParameters = {};
+  //extract persisted query from block
+  let persistedQuery = '';
+  const divElements = block.querySelectorAll('div > div');
 
-  let data = [];
+  divElements.forEach((element, index) => {
+    const textContent = element.textContent.trim();
+    if (textContent === 'Persisted Query' && index + 1 < divElements.length) {
+      const nextElement = divElements[index + 1];
+      if (nextElement) {
+        persistedQuery = nextElement.textContent.trim();
+      }
+    }
+  });
 
   try {
-    const { data: gqlData, error } = await fetchPersistedQuery(
-      persistedQuery,
-      queryParameters,
-    );
+    const AEM_HOST = await config.SERVICE_URI;
+    const AEM_GRAPHQL_ENDPOINT = await config.GRAPHQL_ENDPOINT;
+    const AUTH_TOKEN = await config.AUTH_TOKEN;
+    const AEM_HEADLESS_CLIENT = new AdobeAemHeadlessClientJs({
+      serviceURL: AEM_HOST,
+      auth: AUTH_TOKEN,
+    });
+    let dataObj = {};
 
-    if (error) {
-      console.error('Failed to fetch GraphQL data:', error);
-      return data;
+    if (persistedQuery) {
+      dataObj = await AEM_HEADLESS_CLIENT.runPersistedQuery(
+        AEM_GRAPHQL_ENDPOINT + persistedQuery,
+      );
     }
 
-    data = gqlData.edsWorkshopCarouselList.items;
+    const data = dataObj?.data?.edsWorkshopCarouselList?.items;
+    return data;
   } catch (e) {
     console.error('Unexpected error while fetching GraphQL data:', e);
   }
-
-  return data;
 }
 
 function groupDataByTitle(data) {
@@ -127,7 +143,10 @@ function renderData(groupedData, block) {
 }
 
 export default async function decorate(block) {
-  const data = await fetchCarouselData();
+  const data = await fetchCarouselData(block);
   const groupedData = groupDataByTitle(data);
+  const env = calcEnvironment();
+  const calcEnv = env;
+  console.log(calcEnv);
   renderData(groupedData, block);
 }
