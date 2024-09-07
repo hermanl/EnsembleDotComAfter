@@ -1,79 +1,72 @@
-/* Cards - Customers */
-.carousel-container .default-content-wrapper h4 {
-  text-align: center;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.carousel {
-  max-width: 1300px;
-  margin: 2rem auto;
-}
-
-.carousel .carousel-wrapper {
-  overflow: hidden;
-}
-
-.carousel .carousel-wrapper .cards-carousel {
+.carousel-container {
+  display: flex;
   position: relative;
-  display: flex;
-  transition: left 0.5s ease;
-  margin-top: 1.5rem;
-}
-
-.carousel .carousel-wrapper .cards-carousel .slide {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 3rem;
+  height: 100%;
   width: 100%;
-  float: left;
-}
 
-.carousel .carousel-wrapper .cards-carousel .slide {
-  width: calc(100% / 2);
-}
+  & .carousel {
+    margin: 2rem auto;
 
-.carousel .carousel-wrapper .cards-carousel .card {
-  text-align: center;
-}
+    & .card {
+      max-width: 400px;
+      max-height: 400px;
+      padding: 20px;
+      margin: 10px;
+      border-radius: 5px;
+      background-color: var(--color-white);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      color: var(--color-black);
 
-.carousel .carousel-wrapper .cards-carousel .card img {
-  max-width: 208px;
-}
+      & .image-wrapper {
+        width: 400px;
+        height: 194px;
+      }
 
-.carousel .carousel-wrapper .carousel-nav-controls {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0 10%;
-  margin: 2rem 0 0;
-}
+      & p:first-of-type {
+        font-size: 16px;
+        font-weight: 500;
+        text-transform: uppercase;
+      }
 
-.carousel .carousel-wrapper .carousel-nav-controls .arrow {
-  padding: 10px;
-  background-color: transparent;
-  margin-top: 0;
-  border: none;
-  cursor: pointer;
-}
+      & p:nth-of-type(2) {
+        font-size: 12px;
+        font-weight: 400;
+        color: rgba(0, 82, 115, 1);
+        line-height: normal;
+      }
 
-.carousel .carousel-wrapper .carousel-nav-controls .arrow.disabled {
-  opacity: 0.25;
-}
-
-.carousel .carousel-wrapper .carousel-nav-controls .arrow img {
-  max-width: 30px;
-}
-
-@media (width <= 768px) {
-  .carousel .carousel-wrapper .cards-carousel .slide {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+      & p:nth-of-type(3) {
+        font-size: 14px;
+        font-weight: 100;
+        line-height: 1.25rem;
+        padding-top: 7px;
+      }
+    }
+  }
+  & .carousel-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0 10%;
+    margin: 2rem 0 0;
   }
 
-  .carousel .carousel-wrapper .cards-carousel .card img {
-    max-width: 100%;
+  & .carousel-container .card:not(.active) {
+    display: none;
+  }
+
+  & .carousel-nav .left-arrow,
+  .carousel-nav .right-arrow {
+    padding: 10px;
+    background-color: transparent;
+    margin-top: 0;
+    border: none;
+    cursor: pointer;
+  }
+
+  & .left-arrow img,
+  .right-arrow img {
+    max-width: 30px;
   }
 }
-
-/* End of Cards - Customers */

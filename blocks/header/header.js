@@ -8,7 +8,9 @@ function closeOnEscape(e) {
   if (e.code === 'Escape') {
     const nav = document.getElementById('nav');
     const navSections = nav.querySelector('.nav-sections');
-    const navSectionExpanded = navSections.querySelector('[aria-expanded="true"]');
+    const navSectionExpanded = navSections.querySelector(
+      '[aria-expanded="true"]',
+    );
     if (navSectionExpanded && isDesktop.matches) {
       // eslint-disable-next-line no-use-before-define
       toggleAllNavSections(navSections);
@@ -42,9 +44,11 @@ function focusNavSection() {
  * @param {Boolean} expanded Whether the element should be expanded or collapsed
  */
 function toggleAllNavSections(sections, expanded = false) {
-  sections.querySelectorAll('.nav-sections .default-content-wrapper > ul > li').forEach((section) => {
-    section.setAttribute('aria-expanded', expanded);
-  });
+  sections
+    .querySelectorAll('.nav-sections .default-content-wrapper > ul > li')
+    .forEach(section => {
+      section.setAttribute('aria-expanded', expanded);
+    });
 }
 
 /**
@@ -54,16 +58,25 @@ function toggleAllNavSections(sections, expanded = false) {
  * @param {*} forceExpanded Optional param to force nav expand behavior when not null
  */
 function toggleMenu(nav, navSections, forceExpanded = null) {
-  const expanded = forceExpanded !== null ? !forceExpanded : nav.getAttribute('aria-expanded') === 'true';
+  const expanded =
+    forceExpanded !== null
+      ? !forceExpanded
+      : nav.getAttribute('aria-expanded') === 'true';
   const button = nav.querySelector('.nav-hamburger button');
-  document.body.style.overflowY = (expanded || isDesktop.matches) ? '' : 'hidden';
+  document.body.style.overflowY = expanded || isDesktop.matches ? '' : 'hidden';
   nav.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-  toggleAllNavSections(navSections, expanded || isDesktop.matches ? 'false' : 'true');
-  button.setAttribute('aria-label', expanded ? 'Open navigation' : 'Close navigation');
+  toggleAllNavSections(
+    navSections,
+    expanded || isDesktop.matches ? 'false' : 'true',
+  );
+  button.setAttribute(
+    'aria-label',
+    expanded ? 'Open navigation' : 'Close navigation',
+  );
   // enable nav dropdown keyboard accessibility
   const navDrops = navSections.querySelectorAll('.nav-drop');
   if (isDesktop.matches) {
-    navDrops.forEach((drop) => {
+    navDrops.forEach(drop => {
       if (!drop.hasAttribute('tabindex')) {
         drop.setAttribute('role', 'button');
         drop.setAttribute('tabindex', 0);
@@ -71,7 +84,7 @@ function toggleMenu(nav, navSections, forceExpanded = null) {
       }
     });
   } else {
-    navDrops.forEach((drop) => {
+    navDrops.forEach(drop => {
       drop.removeAttribute('role');
       drop.removeAttribute('tabindex');
       drop.removeEventListener('focus', focusNavSection);
@@ -129,22 +142,29 @@ export default async function decorate(block) {
 
   const navSections = nav.querySelector('.nav-sections');
   if (navSections) {
-    navSections.querySelectorAll(':scope .default-content-wrapper > ul > li').forEach((navSection) => {
-      if (navSection.querySelector('ul')) navSection.classList.add('nav-drop');
-      navSection.addEventListener('mouseenter', () => {
-        if (isDesktop.matches) {
-          const expanded = navSection.getAttribute('aria-expanded') === 'true';
-          toggleAllNavSections(navSections);
-          navSection.setAttribute('aria-expanded', expanded ? 'false' : 'true');
-        }
+    navSections
+      .querySelectorAll(':scope .default-content-wrapper > ul > li')
+      .forEach(navSection => {
+        if (navSection.querySelector('ul'))
+          navSection.classList.add('nav-drop');
+        navSection.addEventListener('mouseenter', () => {
+          if (isDesktop.matches) {
+            const expanded =
+              navSection.getAttribute('aria-expanded') === 'true';
+            toggleAllNavSections(navSections);
+            navSection.setAttribute(
+              'aria-expanded',
+              expanded ? 'false' : 'true',
+            );
+          }
+        });
+        navSection.addEventListener('mouseleave', () => {
+          if (isDesktop.matches) {
+            navSection.setAttribute('aria-expanded', 'false');
+            toggleAllNavSections(navSections);
+          }
+        });
       });
-      navSection.addEventListener('mouseleave', () => {
-        if (isDesktop.matches) {
-          navSection.setAttribute('aria-expanded', 'false');
-          toggleAllNavSections(navSections);
-        }
-      });
-    });
   }
 
   // hamburger for mobile
@@ -158,7 +178,9 @@ export default async function decorate(block) {
   nav.setAttribute('aria-expanded', 'false');
   // prevent mobile nav behavior on window resize
   toggleMenu(nav, navSections, isDesktop.matches);
-  isDesktop.addEventListener('change', () => toggleMenu(nav, navSections, isDesktop.matches));
+  isDesktop.addEventListener('change', () =>
+    toggleMenu(nav, navSections, isDesktop.matches),
+  );
 
   const navWrapper = document.createElement('div');
   navWrapper.className = 'nav-wrapper';
@@ -170,23 +192,24 @@ export default async function decorate(block) {
   const iconName = navBrandSection.querySelector('img');
   const link = navBrandSection.querySelector('a');
   if (iconName && link) {
-  const iconNameValue = iconName.getAttribute('data-icon-name');
-  link.setAttribute('title', iconNameValue);
+    const iconNameValue = iconName.getAttribute('data-icon-name');
+    link.setAttribute('title', iconNameValue);
   }
 }
 
-  // Variable to track previous scroll position
-  let previousScroll = window.pageYOffset || document.documentElement.scrollTop;
+// Variable to track previous scroll position
+let previousScroll = window.pageYOffset || document.documentElement.scrollTop;
 
-  // Event listener for scroll event
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+// Event listener for scroll event
+window.addEventListener('scroll', () => {
+  const currentScroll =
+    window.pageYOffset || document.documentElement.scrollTop;
 
-    if (currentScroll > 200 && currentScroll > previousScroll) {
-      changeBackgroundColor();
-    } else if (currentScroll <= 200 && currentScroll < previousScroll) {
-      resetBackgroundColor();
-    }
+  if (currentScroll > 200 && currentScroll > previousScroll) {
+    changeBackgroundColor();
+  } else if (currentScroll <= 200 && currentScroll < previousScroll) {
+    resetBackgroundColor();
+  }
 
-    previousScroll = currentScroll;
-  });
+  previousScroll = currentScroll;
+});

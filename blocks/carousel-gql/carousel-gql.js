@@ -1,29 +1,53 @@
+import AdobeAemHeadlessClientJs from 'https://cdn.skypack.dev/pin/@adobe/aem-headless-client-js@v3.2.0-R5xKUKJyh8kNAfej66Zg/mode=imports,min/optimized/@adobe/aem-headless-client-js.js';
+
 import { createOptimizedPicture } from '../../scripts/aem.js';
+import { getConfigValue } from '../../scripts/configs.js';
 
 async function fetchCarouselData(block) {
-  const link = block.querySelector('a');
-  let data = [];
-  const response = await fetch(link?.href);
-  if (response.ok) {
-    const jsonData = await response.json();
+  //extract persisted query from block
+  let persistedQuery = '';
+  const divElements = block.querySelectorAll('div > div');
 
-    // grab nested array from the response
-    data = jsonData.data;
-  } else {
-    // eslint-disable-next-line no-console
-    console.log('Failed to fetch carousel data');
+  divElements.forEach((element, index) => {
+    const textContent = element.textContent.trim();
+    if (textContent === 'Persisted Query' && index + 1 < divElements.length) {
+      const nextElement = divElements[index + 1];
+      if (nextElement) {
+        persistedQuery = nextElement.textContent.trim();
+      }
+    }
+  });
+
+  block.innerHTML = '';
+
+  try {
+    const AEM_HOST = await getConfigValue('aem-host');
+    const AEM_GRAPHQL_ENDPOINT = await getConfigValue('aem-graphql-endpoint');
+    const AUTH_TOKEN = await getConfigValue('auth');
+
+    const AEM_HEADLESS_CLIENT = new AdobeAemHeadlessClientJs({
+      serviceURL: AEM_HOST,
+      auth: AUTH_TOKEN,
+    });
+    let dataObj = {};
+
+    if (persistedQuery) {
+      const endpoint = `${AEM_GRAPHQL_ENDPOINT}${persistedQuery}`;
+      dataObj = await AEM_HEADLESS_CLIENT.runPersistedQuery(endpoint);
+    }
+
+    const data = dataObj?.data?.edsWorkshopCarouselList?.items;
+    return data;
+  } catch (e) {
+    console.error('Unexpected error while fetching GraphQL data:', e);
+    return [];
   }
-
-  // remove element after fetching data
-  link?.remove();
-  return data;
 }
 
 function groupDataByTitle(data) {
   const groupedData = {};
   data.forEach(item => {
-    // use the title as the group key
-    const groupKey = item.Title.toLowerCase().replace(/\s+/g, '-');
+    const groupKey = item.title.toLowerCase().replace(/\s+/g, '-');
     groupedData[groupKey] = item;
   });
   return groupedData;
@@ -38,20 +62,18 @@ function createCarouselCard(card, key) {
   infoContainer.classList.add('info-wrapper');
 
   const title = document.createElement('p');
-  title.textContent = card.Title;
+  title.textContent = card.title;
 
   const services = document.createElement('p');
-  services.textContent = card.Services;
+  services.textContent = card.services;
 
   const description = document.createElement('p');
-  description.textContent = card.Description;
+  description.textContent = card.description;
 
-  // only append image if imageUrl exists
-  const image = createOptimizedPicture(card.image, card.Title, true, [
+  const image = createOptimizedPicture(card.referenceImage, card.title, true, [
     { width: '210' },
   ]);
 
-  // append elements to the containers
   infoContainer.appendChild(title);
   infoContainer.appendChild(services);
   infoContainer.appendChild(description);
@@ -63,11 +85,9 @@ function createCarouselCard(card, key) {
 }
 
 function renderData(groupedData, block) {
-  // create carousel container for the items
   const carouselInner = document.createElement('div');
   carouselInner.classList.add('carousel-container');
 
-  // create carousel navigation container & buttons
   const navContainer = document.createElement('div');
   navContainer.classList.add('carousel-nav');
   const prevButton = document.createElement('button');
@@ -78,8 +98,8 @@ function renderData(groupedData, block) {
 
   const nextButton = document.createElement('button');
   const nextIcon = document.createElement('img');
-  nextButton.classList.add('right-arrow');
   nextIcon.src = '/icons/right-arrow.png';
+  nextButton.classList.add('right-arrow');
   nextButton.appendChild(nextIcon);
 
   block.appendChild(prevButton);
@@ -92,8 +112,6 @@ function renderData(groupedData, block) {
   Object.keys(groupedData).forEach((key, index) => {
     const card = groupedData[key];
     const cardElement = createCarouselCard(card, key);
-
-    // set active class for the first item
     let currentIndex = 0;
     if (index >= currentIndex && index < currentIndex + 3) {
       cardElement.classList.add('active');
@@ -101,7 +119,6 @@ function renderData(groupedData, block) {
     carouselInner.appendChild(cardElement);
   });
 
-  // add event listeners for navigation buttons
   let currentIndex = 0;
   const totalItems = Object.keys(groupedData).length;
 

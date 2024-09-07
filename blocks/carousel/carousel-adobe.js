@@ -1,6 +1,6 @@
 import { createOptimizedPicture } from '../../scripts/aem.js';
 
-export default function CardsCustomers(block) {
+export default function decorate(block) {
   const link = block.querySelector('a');
   let data = [];
   let totalSlides;
