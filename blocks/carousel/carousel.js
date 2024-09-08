@@ -90,7 +90,7 @@ function renderData(groupedData, block) {
   block.appendChild(navContainer);
 
   function determineCardCount() {
-    return window.innerWidth < 768 ? 1 : 3;
+    return window.innerWidth < 768 ? 1 : 2;
   }
 
   Object.keys(groupedData).forEach((key, index) => {

@@ -110,7 +110,7 @@ function renderData(groupedData, block) {
   block.appendChild(navContainer);
 
   function determineCardCount() {
-    return window.innerWidth < 768 ? 1 : 3;
+    return window.innerWidth < 768 ? 1 : 2;
   }
 
   Object.keys(groupedData).forEach((key, index) => {
@@ -156,8 +156,6 @@ function renderData(groupedData, block) {
 
   window.addEventListener('resize', () => {
     const cardCount = determineCardCount();
-
-    // Adjust currentIndex to show valid cards after resize
     if (currentIndex >= totalItems - cardCount + 1) {
       currentIndex = cardCount > totalItems ? 0 : totalItems - cardCount;
     }
