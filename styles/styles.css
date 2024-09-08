@@ -1,3 +1,11 @@
+/* stylelint-disable media-feature-range-notation */
+/* stylelint-disable declaration-block-no-duplicate-properties */
+/* stylelint-disable color-function-notation */
+/* stylelint-disable alpha-value-notation */
+/* stylelint-disable rule-empty-line-before */
+/* stylelint-disable comment-empty-line-before */
+/* stylelint-disable custom-property-empty-line-before */
+
 /*
  * Copyright 2020 Adobe. All rights reserved.
  * This file is licensed to you under the Apache License, Version 2.0 (the "License");
@@ -71,9 +79,6 @@ body {
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--background-color);
-  /* not sure where the horizontal scroll is coming from
-  so adding this */
-  overflow-x: hidden;
   display: none;
 }
 

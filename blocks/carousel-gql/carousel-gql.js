@@ -109,11 +109,15 @@ function renderData(groupedData, block) {
   navContainer.appendChild(nextButton);
   block.appendChild(navContainer);
 
+  function determineCardCount() {
+    return window.innerWidth < 768 ? 1 : 2;
+  }
+
   Object.keys(groupedData).forEach((key, index) => {
     const card = groupedData[key];
     const cardElement = createCarouselCard(card, key);
     let currentIndex = 0;
-    if (index >= currentIndex && index < currentIndex + 3) {
+    if (index >= currentIndex && index < currentIndex + determineCardCount()) {
       cardElement.classList.add('active');
     }
     carouselInner.appendChild(cardElement);
@@ -124,8 +128,13 @@ function renderData(groupedData, block) {
 
   function updateActiveCard() {
     const cards = carouselInner.querySelectorAll('.card');
+    const cardCount = determineCardCount();
+    if (currentIndex >= totalItems) {
+      currentIndex = 0;
+    }
+
     cards.forEach((card, index) => {
-      if (index >= currentIndex && index < currentIndex + 3) {
+      if (index >= currentIndex && index < currentIndex + cardCount) {
         card.classList.add('active');
       } else {
         card.classList.remove('active');
@@ -134,12 +143,23 @@ function renderData(groupedData, block) {
   }
 
   prevButton.addEventListener('click', () => {
-    currentIndex = (currentIndex - 3 + totalItems) % totalItems;
+    const cardCount = determineCardCount();
+    currentIndex = (currentIndex - cardCount + totalItems) % totalItems;
     updateActiveCard();
   });
 
   nextButton.addEventListener('click', () => {
-    currentIndex = (currentIndex + 3) % totalItems;
+    const cardCount = determineCardCount();
+    currentIndex = (currentIndex + cardCount) % totalItems;
+    updateActiveCard();
+  });
+
+  window.addEventListener('resize', () => {
+    const cardCount = determineCardCount();
+    if (currentIndex >= totalItems - cardCount + 1) {
+      currentIndex = cardCount > totalItems ? 0 : totalItems - cardCount;
+    }
+
     updateActiveCard();
   });
 }

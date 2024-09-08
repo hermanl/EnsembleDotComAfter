@@ -39,7 +39,7 @@ export default function decorate(block) {
       updatedSlides.push(slideDiv.outerHTML);
     });
 
-    block.innerHTML = `<div class="carousel-wrapper">
+    block.innerHTML = `<div class="carousel-adobe-wrapper">
       <div class="cards-carousel">
         ${updatedSlides.join('')}
       </div>
