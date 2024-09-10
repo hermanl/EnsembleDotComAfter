@@ -20,12 +20,10 @@ function submitForm() {
   // change link to your email-form URL
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
-    body: JSON.stringify({
-      data: {
-        email,
-        comments,
-      },
-    }),
+    body: `{
+        "email": ${email},
+        "comments": ${comments},
+      }`,
     headers: {
       "Content-Type": "appication/json; charset=UTF-8",
     }
