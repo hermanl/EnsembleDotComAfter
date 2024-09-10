@@ -17,13 +17,12 @@ function submitForm() {
 
   if (!validateEmail()) return;
 
-  // const body = new URLSearchParams();
-  // body.append('email', email);
-  // body.append('comments', comments);
-  const body = `'email=${email}&comments=${comments}'`;
+  const body = new URLSearchParams();
+  body.append('email', email);
+  body.append('comments', comments);
 
   // change link to your email-form URL
-  fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
+  fetch('/email-form', {
     method: "POST",
     body: body,
     headers: {
