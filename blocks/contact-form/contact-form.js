@@ -21,11 +21,13 @@ function submitForm() {
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
     body: JSON.stringify({
-      email,
-      comments,
+      data: {
+        email,
+        comments,
+      },
     }),
     headers: {
-      "Content-type": "appication/json; charset=UTF-8",
+      "Content-Type": "appication/json; charset=UTF-8",
     }
   }).then((response) => {
     console.log(response.json());
