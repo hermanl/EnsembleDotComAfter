@@ -25,7 +25,7 @@ function submitForm() {
       'comments': comments,
     }),
     headers: {
-      "Content-Type": "appication/x-www-form-urlencoded",
+      "content-type": "appication/x-www-form-urlencoded",
     }
   }).then((response) => {
     console.log(response.json());
