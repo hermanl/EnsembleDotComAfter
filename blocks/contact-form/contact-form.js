@@ -20,15 +20,19 @@ function submitForm() {
   // change link to your email-form URL
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
-    body: new URLSearchParams({
-      'email': email,
-      'comments': comments,
+    body: JSON.stringify({
+      data: {
+        email,
+        comments,
+      },
     }),
     headers: {
-      "content-type": "appication/x-www-form-urlencoded",
+      "Content-Type": "appication/json",
     }
   }).then((response) => {
     console.log(response.json());
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
