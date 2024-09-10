@@ -17,9 +17,14 @@ function submitForm() {
 
   if (!validateEmail()) return;
 
-  const body = new URLSearchParams();
-  body.append('email', email);
-  body.append('comments', comments);
+  const data = {
+    email,
+    comments,
+  };
+  const body = Object.keys(data).map(key => {
+    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+  })
+  .join('&');
 
   // change link to your email-form URL
   fetch('/email-form', {
@@ -29,7 +34,7 @@ function submitForm() {
       "Content-Type": "appication/x-www-form-urlencoded;charset=UTF-8",
     }
   }).then((response) => {
-    console.log(response.json());
+    console.log(response);
   }).catch((err) => {
     console.error(err);
   });
