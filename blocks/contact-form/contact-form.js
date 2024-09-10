@@ -11,24 +11,27 @@ function validateEmail() {
   return isEmail;
 };
 
-async function submitForm() {
+function submitForm() {
   const email = document.querySelector('#email').value;
   const comments = document.querySelector('#comments').value;
 
   if (!validateEmail()) return;
 
   // change link to your email-form URL
-  const response = await fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
+  fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
     body: JSON.stringify({
       data: {
         email,
         comments,
       },
-    })
-  })
-
-  console.log(response.json());
+    }),
+    headers: {
+      "Content-Type": "appication/json",
+    }
+  }).then((response) => {
+    console.log(response.json());
+  });
 }
 
 export default function decorate(block) {
