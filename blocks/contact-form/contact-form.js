@@ -16,7 +16,8 @@ function submitForm() {
   const comments = document.querySelector('#comments').value;
 
   if (!validateEmail()) return;
-  
+
+  // change link to your email-form URL
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
     body: JSON.stringify({
