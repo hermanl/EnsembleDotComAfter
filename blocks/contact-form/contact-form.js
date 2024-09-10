@@ -26,15 +26,15 @@ function submitForm() {
   // })
   // .join('&');
   const body = new URLSearchParams();
+  body.append('email', email);
+  body.append('comments', comments);
 
   console.log(body);
 
   // change link to your email-form URL
   fetch('/email-form', {
     method: "POST",
-    headers: {
-      "Content-Type": "appication/x-www-form-urlencoded;charset=UTF-8",
-    }
+    body,
   }).then((response) => {
     console.log(response);
   }).catch((err) => {
