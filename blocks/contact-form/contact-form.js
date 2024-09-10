@@ -17,17 +17,16 @@ function submitForm() {
 
   if (!validateEmail()) return;
 
+  const body = new URLSearchParams();
+  body.append('email', email);
+  body.append('comments', comments);
+
   // change link to your email-form URL
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
     method: "POST",
-    body: JSON.stringify({
-      data: {
-        email,
-        comments,
-      },
-    }),
+    body: body,
     headers: {
-      "Content-Type": "appication/json",
+      "Content-Type": "appication/x-www-form-urlencoded;charset=UTF-8",
     }
   }).then((response) => {
     console.log(response.json());
