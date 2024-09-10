@@ -20,7 +20,7 @@ function submitForm() {
   // const body = new URLSearchParams();
   // body.append('email', email);
   // body.append('comments', comments);
-  const body = `email=${email}&comments=${comments}`;
+  const body = `'email=${email}&comments=${comments}'`;
 
   // change link to your email-form URL
   fetch('https://main--ensembledotcomafter--ensemblesc.hlx.page/email-form', {
