@@ -17,14 +17,16 @@ function submitForm() {
 
   if (!validateEmail()) return;
 
-  const data = {
-    email,
-    comments,
-  };
-  const body = Object.keys(data).map(key => {
-    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-  })
-  .join('&');
+  // const data = {
+  //   email,
+  //   comments,
+  // };
+  // const body = Object.keys(data).map(key => {
+  //   return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+  // })
+  // .join('&');
+  const body = new URLSearchParams();
+
   console.log(body);
 
   // change link to your email-form URL
@@ -32,8 +34,7 @@ function submitForm() {
     method: "POST",
     headers: {
       "Content-Type": "appication/x-www-form-urlencoded;charset=UTF-8",
-    },
-    body: body,
+    }
   }).then((response) => {
     console.log(response);
   }).catch((err) => {
