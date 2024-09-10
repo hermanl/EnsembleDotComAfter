@@ -25,14 +25,15 @@ function submitForm() {
     return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
   })
   .join('&');
+  console.log(body);
 
   // change link to your email-form URL
   fetch('/email-form', {
     method: "POST",
-    body: body,
     headers: {
       "Content-Type": "appication/x-www-form-urlencoded;charset=UTF-8",
-    }
+    },
+    body: body,
   }).then((response) => {
     console.log(response);
   }).catch((err) => {
